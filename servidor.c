@@ -92,7 +92,7 @@ void main()
 
     server_addr.sin_family = PF_INET;
     server_addr.sin_port = htons(8080);
-    server_addr.sin_addr.s_addr = inet_addr("192.168.42.93");
+    server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
     if (sockfd < 0)
     {
@@ -157,7 +157,13 @@ void main()
             float media = busqueda(ingreso->origen, ingreso->destino, ingreso->hora);
 
             char * name;
-            printf("IP DEL CLIENTE:%d \n", getsockname(newSockfd,(struct sockaddr *)&remote_addr,&addrlen)); 
+
+            struct sockaddr_in* pV4Addr = (struct sockaddr_in*)&remote_addr;
+            struct in_addr ipAddr = pV4Addr->sin_addr;
+
+            char str[INET_ADDRSTRLEN];
+            inet_ntop(AF_INET, &ipAddr, str, INET_ADDRSTRLEN);
+            printf("IP DEL CLIENTE:%s \n", str); 
             recibido = send(newSockfd, &media, sizeof(float), 0);
 
             clock_t tiempo2 = clock();

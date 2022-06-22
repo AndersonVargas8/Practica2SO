@@ -24,7 +24,7 @@ void ejecucion(struct inType *ingreso)
 
     server_addr.sin_family = PF_INET;
     server_addr.sin_port = htons(8080);
-    server_addr.sin_addr.s_addr = inet_addr("192.168.42.93");
+    server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
     if (sockfd < 0)
     {
