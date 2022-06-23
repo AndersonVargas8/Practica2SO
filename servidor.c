@@ -164,6 +164,22 @@ void main()
             char str[INET_ADDRSTRLEN];
             inet_ntop(AF_INET, &ipAddr, str, INET_ADDRSTRLEN);
             printf("IP DEL CLIENTE:%s \n", str); 
+
+            time_t t = time(NULL);
+            struct tm tiempoLocal = *localtime(&t);
+
+            char fechaHora[70];
+
+            char *formato = "%Y-%m-%d %H:%M:%S";
+
+            int bytesEscritos = strftime(fechaHora, sizeof fechaHora, formato, &tiempoLocal);
+
+            if(bytesEscritos != 0){
+                printf("Fecha y hora: %s\n",fechaHora);
+            }else{
+                perror("Error formateando fecha");
+            }
+
             recibido = send(newSockfd, &media, sizeof(float), 0);
 
             clock_t tiempo2 = clock();

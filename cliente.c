@@ -8,6 +8,7 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdio_ext.h>
 
 
 struct inType
@@ -53,7 +54,19 @@ void ejecucion(struct inType *ingreso)
     close(sockfd);
 }
 
+void confirmar(char mensaje[], int dato){
 
+    if(dato != -1){
+        printf("%s %d\n",mensaje,dato);
+    }else{
+        printf("%s\n",mensaje);
+    }
+    
+    printf("%s","Presione ENTER para continuar...");
+    getchar();
+    getchar();
+    __fpurge(stdin);
+}
 
 void main()
 {
@@ -72,23 +85,42 @@ void main()
         case 1:
             printf("\nIngrese el origen: ");
             scanf("%i", &ingreso->origen);
+            int origen = (int)ingreso->origen;
+
+            confirmar("\nSe ha guardado el origen:",origen);
             break;
 
         case 2:
             printf("\nIngrese el destino: ");
             scanf("%i", &ingreso->destino);
+
+            int destino = (int)ingreso->destino;
+
+            confirmar("\nSe ha guardado el destino:",destino);
             break;
 
         case 3:
             printf("\nIngrese la hora: ");
             scanf("%i", &ingreso->hora);
+            int hora = (int)ingreso->hora;
+
+            confirmar("\nSe ha guardado la hora:",hora);
             break;
 
         case 4:
+
+            printf("\nSe realizará la búsqueda con los siguientes datos:\n");
             printf("\nOrigen: %d", ingreso->origen);
             printf("\nDestino: %d", ingreso->destino);
             printf("\nHora: %d\n", ingreso->hora);
+            confirmar("",-1);
             ejecucion(ingreso);
+
+            printf("\nSe regresará al menú\n");
+            printf("%s","Presione ENTER para continuar...");
+            getchar();
+            __fpurge(stdin);
+
             break;
 
         case 5:
