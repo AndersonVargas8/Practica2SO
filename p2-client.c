@@ -16,7 +16,7 @@ struct inType
     int origen, destino, hora;
 };
 
-void ejecucion(struct inType *ingreso)
+void conexion(struct inType *ingreso)
 {
     
     struct sockaddr_in server_addr;
@@ -81,7 +81,7 @@ void main()
 
     while (opc != 5)
     {
-        printf("\n1. Ingresar origen\n2. Ingresar destino\n3. Ingresar hora\n4. Buscar tiempo de viaje medio\n5. Salir\n=> ");
+        printf("\n1. Ingresar origen\n2. Ingresar destino\n3. Ingresar hora\n4. Buscar tiempo de viaje medio\n5. Salir\n→ ");
         scanf("%d", &opc);
 
         switch (opc)
@@ -118,7 +118,7 @@ void main()
             printf("\nDestino: %d", ingreso->destino);
             printf("\nHora: %d\n", ingreso->hora);
             confirmar("",-1);
-            ejecucion(ingreso);
+            conexion(ingreso);
 
             printf("\nSe regresará al menú\n");
             printf("%s","Presione ENTER para continuar...");
