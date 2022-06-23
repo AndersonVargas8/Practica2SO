@@ -78,6 +78,8 @@ float busqueda(int origenId, int destinoId, int hora)
     fclose(archivo);
     return mediaViaje;
 }
+
+
 void main()
 {
     int r;
@@ -107,7 +109,7 @@ void main()
         exit(EXIT_FAILURE);
     }
 
-    r = listen(sockfd, 5);
+    r = listen(sockfd, 32);
 
     if (r < 0)
     {
@@ -116,7 +118,7 @@ void main()
     }
     else
     {
-        printf("[SERVER] : Listening on port 8080\n");
+        //printf("[SERVER] : Listening on port 8080\n");
     }
 
     int opc = 0;
@@ -153,18 +155,21 @@ void main()
                 opc = 0;
                 continue;
             }
-            printf("DATO RECIBIDO: Origen:%d Destino:%d Hora:%d\n", ingreso->origen, ingreso->destino, ingreso->hora);
+            //printf("DATO RECIBIDO: Origen:%d Destino:%d Hora:%d\n", ingreso->origen, ingreso->destino, ingreso->hora);
             float media = busqueda(ingreso->origen, ingreso->destino, ingreso->hora);
 
             char * name;
 
+            //Obtener ip del cliente
             struct sockaddr_in* pV4Addr = (struct sockaddr_in*)&remote_addr;
             struct in_addr ipAddr = pV4Addr->sin_addr;
 
-            char str[INET_ADDRSTRLEN];
-            inet_ntop(AF_INET, &ipAddr, str, INET_ADDRSTRLEN);
-            printf("IP DEL CLIENTE:%s \n", str); 
+            char ipCliente[INET_ADDRSTRLEN];
+            inet_ntop(AF_INET, &ipAddr, ipCliente, INET_ADDRSTRLEN);
+            //printf("IP DEL CLIENTE:%s \n", ipCliente); 
 
+
+            //Obtener fecha actual
             time_t t = time(NULL);
             struct tm tiempoLocal = *localtime(&t);
 
@@ -174,11 +179,45 @@ void main()
 
             int bytesEscritos = strftime(fechaHora, sizeof fechaHora, formato, &tiempoLocal);
 
-            if(bytesEscritos != 0){
-                printf("Fecha y hora: %s\n",fechaHora);
-            }else{
+            if(bytesEscritos == 0){
                 perror("Error formateando fecha");
             }
+
+            FILE* fichero;
+            fichero = fopen("log.txt","a");
+            
+            //Guardar hora en el log
+            fputs("Fecha [",fichero);
+            fputs(strcat(fechaHora,"] | "),fichero);
+
+            //Guardar IP cliente en el log
+            fputs("Cliente [",fichero);
+            fputs(strcat(ipCliente,"] | "),fichero);
+
+            //Guardar búsqueda en el log
+            fputs("Búsqueda [Origen: ",fichero);
+            int dato = (int)ingreso->origen;
+            char datoStr[sizeof dato];
+            sprintf(datoStr,"%d",dato);
+            fputs(datoStr,fichero);
+
+            dato = (int)ingreso->destino;
+            sprintf(datoStr,"%d",dato);
+            fputs(" - Destino: ",fichero);
+            fputs(datoStr,fichero);
+
+            dato = (int)ingreso->hora;
+            sprintf(datoStr,"%d",dato);
+            fputs(" - Hora: ",fichero);
+            fputs(datoStr,fichero);
+
+            char datoStr2[20];
+            sprintf(datoStr2,"%f",media);
+            fputs(" - Media: ",fichero);
+            fputs(datoStr2,fichero);
+
+            fputs("]\n",fichero);
+            fclose(fichero);
 
             recibido = send(newSockfd, &media, sizeof(float), 0);
 
@@ -186,7 +225,7 @@ void main()
 
             double tiempo = (double)(tiempo2 - tiempo1) / CLOCKS_PER_SEC;
 
-            printf("Tiempo de ejecución: %f segundos\n", tiempo);
+            //printf("Tiempo de ejecución: %f segundos\n", tiempo);
             //close(sockfd);
             close(newSockfd);
         }

@@ -49,7 +49,11 @@ void ejecucion(struct inType *ingreso)
 
     recv(sockfd,&media,sizeof(float),0);
 
-    printf("\nMedia recibida: %lf \n",media);
+    if(media != -1){
+        printf("\nMedia recibida: %lf \n",media);
+    }else{
+        printf("\nMedia recibida: NA \n");
+    }
 
     close(sockfd);
 }
